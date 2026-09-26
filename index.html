@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Section -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-icon" aria-hidden="true">
+          <!-- Wallet SVG Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4z" />
+          </svg>
+        </div>
+        <div>
+          <h1>Personal Expense Tracker</h1>
+          <p class="subtitle">Track, manage, and categorize your spending with ease</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Overview Cards -->
+    <section class="overview-section" aria-label="Expenses Overview">
+      <div class="summary-card total-card">
+        <div class="summary-icon" aria-hidden="true">
+          <!-- Dollar/Currency SVG Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <div class="summary-details">
+          <span class="summary-label" id="total-label">Total Expenses</span>
+          <h2 class="summary-value" id="total-amount">$0.00</h2>
+        </div>
+      </div>
+
+      <div class="summary-card count-card">
+        <div class="summary-icon count-icon" aria-hidden="true">
+          <!-- Receipt/List SVG Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z" />
+            <line x1="8" y1="6" x2="16" y2="6" />
+            <line x1="8" y1="10" x2="16" y2="10" />
+            <line x1="8" y1="14" x2="12" y2="14" />
+          </svg>
+        </div>
+        <div class="summary-details">
+          <span class="summary-label">Expense Items</span>
+          <h2 class="summary-value" id="expense-count">0</h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="main-layout">
+      <!-- Expense Form Card -->
+      <section class="card form-card">
+        <div class="card-header">
+          <h2 id="form-heading">Add New Expense</h2>
+          <span id="form-mode-badge" class="mode-badge" style="display: none;">Edit Mode</span>
+        </div>
+
+        <!-- Inline Notification / Error Message -->
+        <div id="form-alert" class="alert" role="alert" style="display: none;"></div>
+
+        <form id="expense-form" novalidate>
+          <!-- Hidden ID input for tracking edited item -->
+          <input type="hidden" id="expense-id">
+
+          <!-- Title Field -->
+          <div class="form-group">
+            <label for="expense-title">Expense Title <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="expense-title" 
+              name="title" 
+              placeholder="e.g., Grocery Shopping" 
+              autocomplete="off"
+            >
+            <small class="field-error" id="title-error"></small>
+          </div>
+
+          <!-- Amount Field -->
+          <div class="form-group">
+            <label for="expense-amount">Amount ($) <span class="required">*</span></label>
+            <input 
+              type="number" 
+              id="expense-amount" 
+              name="amount" 
+              placeholder="0.00" 
+              step="0.01" 
+              min="0.01"
+            >
+            <small class="field-error" id="amount-error"></small>
+          </div>
+
+          <!-- Category Field -->
+          <div class="form-group">
+            <label for="expense-category">Category <span class="required">*</span></label>
+            <select id="expense-category" name="category">
+              <option value="" disabled selected>-- Select a Category --</option>
+              <option value="Food & Dining">Food &amp; Dining</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Bills & Utilities">Bills &amp; Utilities</option>
+              <option value="Health & Fitness">Health &amp; Fitness</option>
+              <option value="Education">Education</option>
+              <option value="Other">Other</option>
+            </select>
+            <small class="field-error" id="category-error"></small>
+          </div>
+
+          <!-- Form Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" id="submit-btn" class="btn btn-primary">
+              <!-- Plus SVG Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <span id="submit-btn-text">Add Expense</span>
+            </button>
+
+            <button type="button" id="cancel-btn" class="btn btn-secondary" style="display: none;">
+              <!-- Cancel X SVG Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              <span>Cancel</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Expense List Card -->
+      <section class="card list-card">
+        <div class="card-header list-header">
+          <div>
+            <h2>Expense Records</h2>
+            <p class="section-desc">View and manage all recorded transactions</p>
+          </div>
+
+          <!-- Category Filter (Improvement 2) -->
+          <div class="filter-wrapper">
+            <label for="category-filter" class="filter-label">
+              <!-- Filter Funnel SVG Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="filter-icon">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              <span>Filter:</span>
+            </label>
+            <select id="category-filter" aria-label="Filter expenses by category">
+              <option value="All">All Categories</option>
+              <option value="Food & Dining">Food &amp; Dining</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Bills & Utilities">Bills &amp; Utilities</option>
+              <option value="Health & Fitness">Health &amp; Fitness</option>
+              <option value="Education">Education</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Expenses Table Container -->
+        <div class="table-container">
+          <table class="expense-table" id="expense-table">
+            <thead>
+              <tr>
+                <th scope="col" class="th-title">Title</th>
+                <th scope="col" class="th-category">Category</th>
+                <th scope="col" class="th-amount">Amount</th>
+                <th scope="col" class="th-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="expense-list">
+              <!-- Dynamic Rows inserted via JavaScript -->
+            </tbody>
+          </table>
+
+          <!-- Empty State Container -->
+          <div id="empty-state" class="empty-state" style="display: none;">
+            <!-- Empty state Folder / Search SVG Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+            </svg>
+            <h3 id="empty-title">No expenses found</h3>
+            <p id="empty-subtitle">Add your first expense using the form to get started!</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Personal Expense Tracker &bull; Built with HTML5, CSS3 &amp; Vanilla JavaScript</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
